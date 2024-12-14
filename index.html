@@ -20,18 +20,125 @@
             top: 0;
             left: 0;
         }
-        .text {
+        .blur-panel {
             position: absolute;
-            color: white;
-            font-size: 3rem;
-            font-weight: bold;
+            width: 90%;
+            height: 85%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            color: white;
+            padding: 20px;
+            gap: 20px;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Custom scrollbar */
+        .blur-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        .blur-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1); /* Light gray track */
+            border-radius: 10px;
+        }
+        .blur-panel::-webkit-scrollbar-thumb {
+            background: rgba(200, 200, 200, 0.7); /* Gray thumb */
+            border-radius: 10px;
+        }
+        .blur-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(200, 200, 200, 1); /* Brightened thumb on hover */
+        }
+        /* Glowing text effect */
+        .glow-text {
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 0 0 5px #00d9ff17, 0 0 10px #4d8080, 0 0 15px #593a8a, 
+                         0 0 20px #1f2424, 0 0 25px #04151507, 0 0 30px #00ffff;
+        }
+        .logos-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .logos-container img {
+            width: 80px;
+            height: 80px;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+        .logos-container img:hover {
+            filter: grayscale(0%);
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+        }
+        .contact-form input, .contact-form textarea, .contact-form button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .contact-form input, .contact-form textarea {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .contact-form button {
+            background: rgba(0, 150, 136, 0.8);
+            color: white;
+            cursor: pointer;
+        }
+        .contact-form button:hover {
+            background: rgba(0, 150, 136, 1);
         }
     </style>
 </head>
 <body>
     <canvas id="glCanvas"></canvas>
-    <div class="text">iSyncBit.</div>
+    <div class="blur-panel">
+        <!-- Section 1: Glowing Text -->
+        <div class="section glow-text">
+            iSyncBit
+        </div>
+        <!-- Section 2: Grayscale Logos -->
+        <div class="section">
+            <h3>Let's create with </h3>
+            <div class="logos-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Unity_2021.svg" alt="Unity Logo" title="Unity Engine">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Unreal_Engine_Logo.svg" alt="Unreal Engine Logo" title="Unreal Engine">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/OpenGL_logo.svg" alt="OpenGL Logo" title="OpenGL Shader">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++ Logo" title="C++">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/C-Sharp_Logo.svg" alt="C# Logo" title="C#">
+            </div>
+        </div>
+        <!-- Section 3: Contact Form -->
+        <div class="section">
+            <h3>Contact Us</h3>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="4" placeholder="Your Message"></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
 
     <script type="text/javascript">
         const canvas = document.getElementById('glCanvas');
@@ -67,14 +174,11 @@
 
                 float time = u_time * 0.5;
 
-                // Randomly varying amplitude and frequency
                 float amplitude = 0.3 + 0.3 * sin(time * random(time));
                 float frequency = 3.0 + 3.0 * random(time + 1.0);
 
-                // Curve equation
                 float curve = sin(uv.x * frequency + time) * amplitude;
 
-                // Intensity based on distance from the curve
                 float intensity = smoothstep(0.02, 0.0, abs(uv.y - curve));
 
                 gl_FragColor = vec4(vec3(intensity), 1.0);
