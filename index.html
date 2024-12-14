@@ -172,14 +172,14 @@
                 uv = uv * 2.0 - 1.0; // Normalize to -1 to 1
                 uv.x *= u_resolution.x / u_resolution.y;
 
-                float time = u_time * 0.5;
+                float time = u_time * 0.3;
 
-                float amplitude = 0.3 + 0.3 * sin(time * random(time));
-                float frequency = 3.0 + 3.0 * random(time + 1.0);
+                float amplitude = 0.4 + 0.15; //sin(time * random(time));
+                float frequency = 0.1 + 1.0; // random(time + 5.0) / 80.0;
 
                 float curve = sin(uv.x * frequency + time) * amplitude;
 
-                float intensity = smoothstep(0.02, 0.0, abs(uv.y - curve));
+                float intensity = smoothstep(0.02, 0.0, abs(uv.y + curve));
 
                 gl_FragColor = vec4(vec3(intensity), 1.0);
             }
