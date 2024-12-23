@@ -248,6 +248,48 @@
             canvas.height = window.innerHeight;
             gl.viewport(0, 0, canvas.width, canvas.height);
         });
+
+        // Submit button
+
+        document.querySelector('.contact-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const apiUrl = 'https://api.airtable.com/v0/appLMzvITk8Aqp3AM/iSyncBit%20Info'; // Replace with your API endpoint
+        const jsonData = {
+            records: [
+                {
+                    fields: {
+                        Name: document.querySelector('.contact-form input[type="text"]').value,
+                        Email: document.querySelector('.contact-form input[type="email"]').value,
+                        Message: document.querySelector('.contact-form textarea').value,
+                    },
+                },
+            ],
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer patkN7KeLgT5VP5IS.66fe8c47d1b7f165f7cae12f8482bf06e1a824260a93ecedc18b186c88c4b608', // Replace with your token
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then((data) => {
+            alert('Message sent successfully!');
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            alert('An error occurred. Please try again.');
+            console.error('Error:', error);
+        });
+    });
     </script>
 </body>
 </html>
