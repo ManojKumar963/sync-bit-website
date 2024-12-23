@@ -47,6 +47,11 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
+        .container {
+            display: flex;
+            align-items: flex-start;
+        }
+
         /* Custom scrollbar */
         .blur-panel::-webkit-scrollbar {
             width: 8px;
@@ -70,9 +75,10 @@
                          0 0 20px #1f2424, 0 0 25px #04151507, 0 0 30px #00ffff;
         }
         .logos-container {
+            flex: 1;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .logos-container img {
@@ -109,6 +115,48 @@
         .contact-form button:hover {
             background: rgba(0, 150, 136, 1);
         }
+
+        /* Digit container style */
+        .digit-container {
+            flex: 0 0 5%;
+            display: inline-block;
+            position: relative;
+            width: 40px;
+            height: 60px;
+            border-radius: 5px; /* Add rounded corners */
+            background: linear-gradient(45deg, #f0932b, #e67700); /* Add linear gradient */
+            overflow: hidden;
+        }
+
+        .digit-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #9f9f9f;
+            text-align: center;
+        }
+
+        .digit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 60px;
+            font-size: 30px;
+            transform-origin: top;
+            transform: translateY(0);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .digit.out {
+            transform: translateY(-100%);
+        }
+
+        .digit.in {
+            transform: translateY(0);
+        }
+
     </style>
 </head>
 <body>
@@ -119,14 +167,28 @@
             iSyncBit
         </div>
         <!-- Section 2: Grayscale Logos -->
-        <div class="section">
-            <h3>Let's create with </h3>
-            <div class="logos-container">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Unity_2021.svg" alt="Unity Logo" title="Unity Engine">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Unreal_Engine_Logo.svg" alt="Unreal Engine Logo" title="Unreal Engine">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/OpenGL_logo.svg" alt="OpenGL Logo" title="OpenGL Shader">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++ Logo" title="C++">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/C-Sharp_Logo.svg" alt="C# Logo" title="C#">
+        <div class="section" style="display: flex; align-items: flex-start; gap: 20px; border-bottom: 2px solid #ccc; padding-bottom: 20px;">
+            <!-- Left Side -->
+            <div class="left-side" style="flex: 1; padding-right: 10px;">
+                <h3>Let's create with</h3>
+                <div class="container">
+                    <div class="logos-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Unity_2021.svg" alt="Unity Logo" title="Unity Engine">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Unreal_Engine_Logo.svg" alt="Unreal Engine Logo" title="Unreal Engine">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/OpenGL_logo.svg" alt="OpenGL Logo" title="OpenGL Shader">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg" alt="C++ Logo" title="C++">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/C-Sharp_Logo.svg" alt="C# Logo" title="C#">
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Right Side -->
+            <div class="right-side" style="flex: 1; padding-left: 10px;">
+                <h3>Ongoing projects</h3>
+                <div class="digit-container">
+                    <div class="digit" id="digit1-old">0</div>
+                    <div class="digit" id="digit1-new">1</div>
+                </div>
             </div>
         </div>
         <!-- Section 3: Contact Form -->
@@ -135,7 +197,7 @@
             <form class="contact-form">
                 <input type="text" placeholder="Your Name" required>
                 <input type="email" placeholder="Your Email" required>
-                <textarea rows="4" placeholder="Your Message"></textarea>
+                <textarea rows="6" placeholder="Your Message"></textarea>
                 <button type="submit">Send Message</button>
             </form>
         </div>
@@ -251,11 +313,10 @@
         });
 
         // Submit button
-
         document.querySelector('.contact-form').addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        const apiUrl = 'https://api.airtable.com/v0/appLMzvITk8Aqp3AM/iSyncBit%20Info'; // Replace with your API endpoint
+        const postApiUrl = 'https://api.airtable.com/v0/appLMzvITk8Aqp3AM/iSyncBit%20Info'; // Replace with your API endpoint
         const jsonData = {
             records: [
                 {
@@ -268,10 +329,10 @@
             ],
         };
 
-        fetch(apiUrl, {
+        fetch(postApiUrl, {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer patkN7KeLgT5VP5IS.66fe8c47d1b7f165f7cae12f8482bf06e1a824260a93ecedc18b186c88c4b608', // Replace with your token
+                'Authorization': 'Bearer patkN7KeLgT5VP5IS.17966696a9207a53af5085185c46721aa61e14f633c8963e88bdbacaaee2054c', // Replace with your token
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(jsonData),
@@ -291,6 +352,47 @@
             console.error('Error:', error);
         });
     });
+
+    function changeDigit(oldDigit, newDigit, digitContainerId) {
+        const oldDigitElement = document.getElementById(digitContainerId + '-old');
+        const newDigitElement = document.getElementById(digitContainerId + '-new');
+
+        oldDigitElement.textContent = oldDigit;
+        newDigitElement.textContent = newDigit;
+
+        oldDigitElement.classList.remove('in');
+        oldDigitElement.classList.add('out');
+        newDigitElement.classList.remove('out');
+        newDigitElement.classList.add('in');
+
+        setTimeout(() => {
+            // Swap classes for the next change
+            oldDigitElement.classList.remove('out');
+            oldDigitElement.classList.add('in');
+            newDigitElement.classList.remove('in');
+            newDigitElement.classList.add('out');
+        }, 500); // Adjust duration as needed
+    }
+
+    changeDigit(1, 0, "digit1");
+    // // Function to fetch the number from the API and update the digit
+    // function fetchAndUpdateDigit() {
+    // // Replace with your API URL
+    // const getApiUrl = 'https://example.com/api/projects';  // Example API endpoint
+
+    // fetch(getApiUrl)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //     // Assuming the response data has a `projectsCompleted` field
+    //     const newProjectCount = data.projectsCompleted;
+    //     const oldDigit = parseInt(document.getElementById('digit1-old').textContent);
+        
+    //     // Call changeDigit function to flip the number
+    //     changeDigit(oldDigit, newProjectCount, 'digit1');
+    //     })
+    //     .catch(error => console.error('Error fetching data:', error));
+    // }
+
     </script>
 </body>
 </html>
